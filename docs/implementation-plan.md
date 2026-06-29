@@ -84,10 +84,10 @@ Entry point: [../AGENTS.md](../AGENTS.md)
 - [task-manager-app/docs/frontend-architecture.md](../task-manager-app/docs/frontend-architecture.md)
 
 **Tasks:**
-- [ ] Login and Register components (Signal Forms)
-- [ ] AuthService + JWT interceptor (Bearer header)
-- [ ] Store token in sessionStorage
-- [ ] Auth guard on protected routes
+- [x] Login and Register components (Signal Forms)
+- [x] AuthService + JWT interceptor (Bearer header)
+- [x] Store token in sessionStorage
+- [x] Auth guard on protected routes
 
 **Done when:** User can register, log in, and is redirected to `/tasks`.
 
