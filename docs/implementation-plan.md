@@ -26,11 +26,11 @@ Entry point: [../AGENTS.md](../AGENTS.md)
 - [task-manager-app/docs/frontend-architecture.md](../task-manager-app/docs/frontend-architecture.md)
 
 **Tasks:**
-- [ ] Create .NET solution with projects: `Domain`, `Application`, `Infrastructure`, `Api`
-- [ ] Configure EF Core + SQLite; add initial empty migration
-- [ ] Configure Swagger aligned with [openapi.yaml](../task-manager-api/docs/openapi.yaml)
-- [ ] Configure Angular: routing, HttpClient, lazy-loaded feature routes
-- [ ] Both projects build successfully
+- [x] Create .NET solution with projects: `Domain`, `Application`, `Infrastructure`, `Api`
+- [x] Configure EF Core + SQLite; add initial empty migration
+- [x] Configure Swagger aligned with [openapi.yaml](../task-manager-api/docs/openapi.yaml)
+- [x] Configure Angular: routing, HttpClient, lazy-loaded feature routes
+- [x] Both projects build successfully
 
 **Done when:** `dotnet build` and `ng build` pass.
 
