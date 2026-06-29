@@ -1,0 +1,30 @@
+---
+description: Clean Architecture rules for the Task Manager API (.NET)
+alwaysApply: true
+---
+
+# Task Manager API
+
+Follow Clean Architecture. Dependencies point inward: Api → Application → Domain; Infrastructure → Application/Domain.
+
+## Rules
+
+- Do not put business logic in controllers.
+- Application must not depend on Infrastructure.
+- Prefer small focused classes with clear names.
+- Add or update tests (xUnit + FluentAssertions) before or alongside new behavior.
+- Avoid overengineering; keep the project interview-friendly.
+
+## Conventions
+
+- Commands: `CreateTaskCommand`, `UpdateTaskCommand`
+- Interfaces: `ITaskRepository`, `IUserRepository`
+- Controllers: `TasksController`, `AuthController`
+
+## References
+
+- Architecture: [docs/clean-architecture.md](docs/clean-architecture.md)
+- Stack: [docs/tech-decisions.md](docs/tech-decisions.md)
+- HTTP contract: [docs/openapi.yaml](docs/openapi.yaml)
+- Domain model: [../../docs/domain-model.md](../../docs/domain-model.md)
+- Business rules: [../../memory/business-rules.md](../../memory/business-rules.md)
