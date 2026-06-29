@@ -66,10 +66,10 @@ Entry point: [../AGENTS.md](../AGENTS.md)
 - [task-manager-api/docs/openapi.yaml](../task-manager-api/docs/openapi.yaml)
 
 **Tasks:**
-- [ ] Task entity + repository + use cases
-- [ ] Authorization: users only access their own tasks
-- [ ] `GET/POST /api/tasks`, `GET/PUT/DELETE /api/tasks/{id}`
-- [ ] Unit tests: user isolation, due date in past on create, required title
+- [x] Task entity + repository + use cases
+- [x] Authorization: users only access their own tasks
+- [x] `GET/POST /api/tasks`, `GET/PUT/DELETE /api/tasks/{id}`
+- [x] Unit tests: user isolation, due date in past on create, required title
 
 **Done when:** `dotnet test` passes; endpoints match openapi.yaml.
 

@@ -24,6 +24,9 @@ public class ExceptionHandlingMiddleware(RequestDelegate next, ILogger<Exception
             ValidationException validation => (StatusCodes.Status400BadRequest, "Validation error", validation.Message),
             DuplicateEmailException duplicate => (StatusCodes.Status409Conflict, "Conflict", duplicate.Message),
             InvalidCredentialsException => (StatusCodes.Status401Unauthorized, "Unauthorized", exception.Message),
+            NotFoundException => (StatusCodes.Status404NotFound, "Not found", exception.Message),
+            ForbiddenException => (StatusCodes.Status403Forbidden, "Forbidden", exception.Message),
+            UnauthorizedAccessException => (StatusCodes.Status401Unauthorized, "Unauthorized", exception.Message),
             _ => (StatusCodes.Status500InternalServerError, "Internal server error", "An unexpected error occurred.")
         };
 
