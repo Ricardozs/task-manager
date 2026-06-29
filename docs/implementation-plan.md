@@ -46,11 +46,11 @@ Entry point: [../AGENTS.md](../AGENTS.md)
 - [task-manager-api/docs/clean-architecture.md](../task-manager-api/docs/clean-architecture.md)
 
 **Tasks:**
-- [ ] User entity + password hashing
-- [ ] Register and Login use cases
-- [ ] JWT generation and validation middleware
-- [ ] `POST /api/auth/register` and `POST /api/auth/login`
-- [ ] Unit tests: password validation, duplicate email (409)
+- [x] User entity + password hashing
+- [x] Register and Login use cases
+- [x] JWT generation and validation middleware
+- [x] `POST /api/auth/register` and `POST /api/auth/login`
+- [x] Unit tests: password validation, duplicate email (409)
 
 **Done when:** `dotnet test` passes; endpoints match openapi.yaml.
 
