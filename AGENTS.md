@@ -23,6 +23,9 @@ cd task-manager-api && dotnet build && dotnet test
 
 # Frontend
 cd task-manager-app && npm install && npm test && ng serve
+
+# Frontend E2E (requires .NET SDK; starts API + Angular automatically)
+cd task-manager-app && npm run e2e
 ```
 
 ## Repo index

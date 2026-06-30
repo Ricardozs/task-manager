@@ -2,6 +2,7 @@ using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 using TaskManager.Api.Middleware;
 using TaskManager.Application;
+using TaskManager.Application.Common.Interfaces;
 using TaskManager.Infrastructure;
 using TaskManager.Infrastructure.Persistence;
 
@@ -37,6 +38,20 @@ using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     db.Database.Migrate();
+
+    if (app.Environment.IsDevelopment() &&
+        builder.Configuration.GetValue("SeedDemoData", false))
+    {
+        var passwordHasher = scope.ServiceProvider.GetRequiredService<IPasswordHasher>();
+        var seeded = await DemoDataSeeder.SeedAsync(db, passwordHasher);
+        if (seeded)
+        {
+            app.Logger.LogInformation(
+                "Demo data seeded: {Email} with {TaskCount} sample tasks.",
+                DemoDataSeeder.DemoEmail,
+                DemoDataSeeder.DemoTaskCount);
+        }
+    }
 }
 
 if (app.Environment.IsDevelopment())
@@ -61,11 +76,15 @@ app.MapGet("/openapi/v1.yaml", () =>
 });
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
-app.UseHttpsRedirection();
 
 if (corsOrigins is { Length: > 0 })
 {
     app.UseCors("AngularDev");
+}
+
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
 }
 
 app.UseAuthentication();

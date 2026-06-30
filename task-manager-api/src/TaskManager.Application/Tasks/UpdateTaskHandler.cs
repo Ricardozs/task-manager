@@ -1,12 +1,16 @@
+using FluentValidation;
 using TaskManager.Application.Common.Exceptions;
+using TaskManager.Application.Common.Validation;
 using TaskManager.Application.Common.Interfaces;
 using TaskManager.Application.Tasks.Commands;
 using TaskManager.Application.Tasks.Dtos;
-using TaskManager.Domain.Entities;
+using TaskManager.Application.Tasks.Validators;
 
 namespace TaskManager.Application.Tasks;
 
-public class UpdateTaskHandler(ITaskRepository taskRepository)
+public class UpdateTaskHandler(
+    ITaskRepository taskRepository,
+    IValidator<UpdateTaskValidationContext> validator)
 {
     public async Task<TaskDto> HandleAsync(
         UpdateTaskCommand command,
@@ -19,7 +23,9 @@ public class UpdateTaskHandler(ITaskRepository taskRepository)
         if (task.UserId != command.UserId)
             throw new ForbiddenException("You do not have access to this task.");
 
-        Validate(command, task);
+        await validator.ThrowIfInvalidAsync(
+            new UpdateTaskValidationContext(command, task),
+            cancellationToken);
 
         task.Update(
             command.Title,
@@ -31,14 +37,5 @@ public class UpdateTaskHandler(ITaskRepository taskRepository)
         await taskRepository.UpdateAsync(task, cancellationToken);
 
         return CreateTaskHandler.ToDto(task);
-    }
-
-    private static void Validate(UpdateTaskCommand command, Domain.Entities.TaskItem task)
-    {
-        if (string.IsNullOrWhiteSpace(command.Title))
-            throw new ValidationException("Title is required.");
-
-        if (task.Status == TaskStatus.Completed && command.Status != TaskStatus.Completed)
-            throw new ValidationException("Completed tasks cannot revert to another status.");
     }
 }

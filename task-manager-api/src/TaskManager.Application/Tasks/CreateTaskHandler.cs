@@ -1,4 +1,5 @@
-using TaskManager.Application.Common.Exceptions;
+using FluentValidation;
+using TaskManager.Application.Common.Validation;
 using TaskManager.Application.Common.Interfaces;
 using TaskManager.Application.Tasks.Commands;
 using TaskManager.Application.Tasks.Dtos;
@@ -6,13 +7,15 @@ using TaskManager.Domain.Entities;
 
 namespace TaskManager.Application.Tasks;
 
-public class CreateTaskHandler(ITaskRepository taskRepository)
+public class CreateTaskHandler(
+    ITaskRepository taskRepository,
+    IValidator<CreateTaskCommand> validator)
 {
     public async Task<TaskDto> HandleAsync(
         CreateTaskCommand command,
         CancellationToken cancellationToken = default)
     {
-        Validate(command);
+        await validator.ThrowIfInvalidAsync(command, cancellationToken);
 
         var task = TaskItem.Create(
             command.UserId,
@@ -25,16 +28,6 @@ public class CreateTaskHandler(ITaskRepository taskRepository)
         await taskRepository.AddAsync(task, cancellationToken);
 
         return ToDto(task);
-    }
-
-    private static void Validate(CreateTaskCommand command)
-    {
-        if (string.IsNullOrWhiteSpace(command.Title))
-            throw new ValidationException("Title is required.");
-
-        var today = DateOnly.FromDateTime(DateTime.UtcNow);
-        if (command.DueDate < today)
-            throw new ValidationException("Due date cannot be in the past.");
     }
 
     internal static TaskDto ToDto(TaskItem task) =>

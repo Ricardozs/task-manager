@@ -1,4 +1,4 @@
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { AuthService } from '../../../core/auth/auth.service';
@@ -122,14 +122,17 @@ import { TaskService } from '../task.service';
     </div>
   `,
 })
-export class TaskList implements OnInit {
+export class TaskList {
   protected readonly authService = inject(AuthService);
   private readonly taskService = inject(TaskService);
   private readonly router = inject(Router);
 
   protected readonly tasks = signal<TaskDto[]>([]);
-  protected readonly loading = signal(false);
-  protected readonly loadError = signal<string | null>(null);
+  protected readonly loading = computed(() => this.taskService.tasks.isLoading());
+  protected readonly loadError = computed(() => {
+    const error = this.taskService.tasks.error();
+    return error ? getApiErrorMessage(error) : null;
+  });
   protected readonly editingTaskId = signal<string | null>(null);
   protected readonly deletingId = signal<string | null>(null);
   protected readonly statusUpdatingId = signal<string | null>(null);
@@ -143,26 +146,16 @@ export class TaskList implements OnInit {
     [...this.tasks()].sort((left, right) => left.dueDate.localeCompare(right.dueDate)),
   );
 
-  async ngOnInit(): Promise<void> {
-    await this.loadTasks();
+  constructor() {
+    effect(() => {
+      if (this.taskService.tasks.hasValue()) {
+        this.tasks.set(this.taskService.tasks.value());
+      }
+    });
   }
 
   protected statusClass(status: TaskStatus): string {
     return `status-${status.toLowerCase()}`;
-  }
-
-  protected async loadTasks(): Promise<void> {
-    this.loading.set(true);
-    this.loadError.set(null);
-
-    try {
-      const tasks = await this.taskService.getAll();
-      this.tasks.set(tasks);
-    } catch (error) {
-      this.loadError.set(getApiErrorMessage(error));
-    } finally {
-      this.loading.set(false);
-    }
   }
 
   protected onTaskCreated(task: TaskDto): void {

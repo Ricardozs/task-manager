@@ -1,21 +1,23 @@
+using FluentValidation;
 using TaskManager.Application.Auth.Commands;
 using TaskManager.Application.Auth.Dtos;
 using TaskManager.Application.Common.Exceptions;
 using TaskManager.Application.Common.Interfaces;
+using TaskManager.Application.Common.Validation;
 
 namespace TaskManager.Application.Auth;
 
 public class LoginUserHandler(
     IUserRepository userRepository,
     IPasswordHasher passwordHasher,
-    IJwtTokenGenerator jwtTokenGenerator)
+    IJwtTokenGenerator jwtTokenGenerator,
+    IValidator<LoginUserCommand> validator)
 {
     public async Task<AuthResponse> HandleAsync(
         LoginUserCommand command,
         CancellationToken cancellationToken = default)
     {
-        if (string.IsNullOrWhiteSpace(command.Email) || string.IsNullOrWhiteSpace(command.Password))
-            throw new ValidationException("Email and password are required.");
+        await validator.ThrowIfInvalidAsync(command, cancellationToken);
 
         var normalizedEmail = command.Email.Trim().ToLowerInvariant();
         var user = await userRepository.GetByEmailAsync(normalizedEmail, cancellationToken);

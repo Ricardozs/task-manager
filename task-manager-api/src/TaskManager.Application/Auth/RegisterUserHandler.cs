@@ -1,24 +1,23 @@
-using System.Text.RegularExpressions;
+using FluentValidation;
 using TaskManager.Application.Auth.Commands;
 using TaskManager.Application.Auth.Dtos;
 using TaskManager.Application.Common.Exceptions;
 using TaskManager.Application.Common.Interfaces;
+using TaskManager.Application.Common.Validation;
 using TaskManager.Domain.Entities;
-
 namespace TaskManager.Application.Auth;
 
-public partial class RegisterUserHandler(
+public class RegisterUserHandler(
     IUserRepository userRepository,
     IPasswordHasher passwordHasher,
-    IJwtTokenGenerator jwtTokenGenerator)
+    IJwtTokenGenerator jwtTokenGenerator,
+    IValidator<RegisterUserCommand> validator)
 {
-    private const int MinPasswordLength = 8;
-
     public async Task<AuthResponse> HandleAsync(
         RegisterUserCommand command,
         CancellationToken cancellationToken = default)
     {
-        Validate(command);
+        await validator.ThrowIfInvalidAsync(command, cancellationToken);
 
         var normalizedEmail = command.Email.Trim().ToLowerInvariant();
 
@@ -33,22 +32,4 @@ public partial class RegisterUserHandler(
         var token = jwtTokenGenerator.GenerateToken(user.Id, user.Email);
         return new AuthResponse(token, user.Email);
     }
-
-    private static void Validate(RegisterUserCommand command)
-    {
-        if (string.IsNullOrWhiteSpace(command.Email))
-            throw new ValidationException("Email is required.");
-
-        if (!EmailRegex().IsMatch(command.Email))
-            throw new ValidationException("Email format is invalid.");
-
-        if (string.IsNullOrWhiteSpace(command.Password))
-            throw new ValidationException("Password is required.");
-
-        if (command.Password.Length < MinPasswordLength)
-            throw new ValidationException($"Password must be at least {MinPasswordLength} characters.");
-    }
-
-    [GeneratedRegex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$")]
-    private static partial Regex EmailRegex();
 }

@@ -359,6 +359,59 @@ body {
   border: 0;
 }
 
+@media (max-width: 767px) {
+  .tasks-page {
+    padding: 1.25rem 1rem 2rem;
+  }
+
+  .tasks-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .tasks-header h1 {
+    font-size: 1.625rem;
+  }
+
+  .tasks-header .btn-secondary {
+    align-self: flex-start;
+  }
+
+  .tasks-card {
+    padding: 1rem;
+  }
+
+  .task-list-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .form-actions .btn-primary,
+  .form-actions .btn-secondary,
+  .form-actions .btn-danger {
+    width: 100%;
+  }
+
+  .task-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .task-actions .btn-secondary,
+  .task-actions .btn-danger,
+  .status-select {
+    width: 100%;
+  }
+}
+
 @media (min-width: 768px) {
   .task-row {
     flex-direction: row;

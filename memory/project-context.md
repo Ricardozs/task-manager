@@ -7,6 +7,7 @@ The application is a Task Management System where registered users can manage th
 - Provide CRUD API endpoints.
 - Provide authentication and authorization.
 - Provide a simple responsive frontend.
+- Provide demo seed data for quick local evaluation.
 - Show responsible GenAI usage.
 
 ## Monorepo layout

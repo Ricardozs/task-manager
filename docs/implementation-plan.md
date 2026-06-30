@@ -117,9 +117,24 @@ Entry point: [../AGENTS.md](../AGENTS.md)
 **Repo:** `both`
 
 **Tasks:**
-- [ ] CORS configuration in API for Angular dev server
-- [ ] README in each repo with run instructions
-- [ ] Basic responsive layout
-- [ ] Optional: seed data for demo
+- [x] CORS configuration in API for Angular dev server
+- [x] README in each repo with run instructions
+- [x] Basic responsive layout
+- [x] Seed data for demo (Development only, idempotent)
 
 **Done when:** End-to-end flow works; READMEs are accurate.
+
+---
+
+## Post-phase 6 — E2E Playwright
+
+**Repo:** `task-manager-app`
+
+**Tasks:**
+- [x] Install `playwright-ng-schematics` and configure `ng e2e`
+- [x] `playwright.config.ts` starts API via `webServer`; Angular via `devServerTarget`
+- [x] E2E specs: auth (guard, register, login, invalid credentials) and tasks CRUD
+- [x] Unique user per test via UI registration (no API changes)
+- [x] Document commands in README and AGENTS.md
+
+**Done when:** `npm run e2e` passes; unit tests still pass.

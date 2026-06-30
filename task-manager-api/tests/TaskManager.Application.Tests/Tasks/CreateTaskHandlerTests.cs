@@ -4,6 +4,7 @@ using TaskManager.Application.Common.Exceptions;
 using TaskManager.Application.Common.Interfaces;
 using TaskManager.Application.Tasks;
 using TaskManager.Application.Tasks.Commands;
+using TaskManager.Application.Tasks.Validators;
 using TaskManager.Domain.Entities;
 using TaskManager.Domain.Enums;
 
@@ -16,7 +17,7 @@ public class CreateTaskHandlerTests
 
     public CreateTaskHandlerTests()
     {
-        _sut = new CreateTaskHandler(_taskRepository);
+        _sut = new CreateTaskHandler(_taskRepository, new CreateTaskCommandValidator());
     }
 
     [Theory]

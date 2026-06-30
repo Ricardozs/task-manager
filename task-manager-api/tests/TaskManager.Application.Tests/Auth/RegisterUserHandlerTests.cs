@@ -2,6 +2,7 @@ using FluentAssertions;
 using NSubstitute;
 using TaskManager.Application.Auth;
 using TaskManager.Application.Auth.Commands;
+using TaskManager.Application.Auth.Validators;
 using TaskManager.Application.Common.Exceptions;
 using TaskManager.Application.Common.Interfaces;
 using TaskManager.Domain.Entities;
@@ -19,7 +20,11 @@ public class RegisterUserHandlerTests
     {
         _passwordHasher.Hash(Arg.Any<string>()).Returns("hashed-password");
         _jwtTokenGenerator.GenerateToken(Arg.Any<Guid>(), Arg.Any<string>()).Returns("jwt-token");
-        _sut = new RegisterUserHandler(_userRepository, _passwordHasher, _jwtTokenGenerator);
+        _sut = new RegisterUserHandler(
+            _userRepository,
+            _passwordHasher,
+            _jwtTokenGenerator,
+            new RegisterUserCommandValidator());
     }
 
     [Theory]

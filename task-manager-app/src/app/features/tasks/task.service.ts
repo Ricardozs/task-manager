@@ -1,5 +1,5 @@
-import { HttpClient } from '@angular/common/http';
-import { inject, Service } from '@angular/core';
+import { HttpClient, httpResource } from '@angular/common/http';
+import { inject, Service, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
@@ -14,12 +14,19 @@ export class TaskService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = environment.apiUrl;
 
-  getAll(): Promise<TaskDto[]> {
-    return firstValueFrom(this.http.get<TaskDto[]>(`${this.apiUrl}/api/tasks`));
-  }
+  readonly tasks = httpResource<TaskDto[]>(() => `${this.apiUrl}/api/tasks`, {
+    defaultValue: [],
+  });
 
-  getById(id: string): Promise<TaskDto> {
-    return firstValueFrom(this.http.get<TaskDto>(`${this.apiUrl}/api/tasks/${id}`));
+  private readonly selectedTaskId = signal<string | undefined>(undefined);
+
+  readonly task = httpResource<TaskDto>(() => {
+    const id = this.selectedTaskId();
+    return id ? `${this.apiUrl}/api/tasks/${id}` : undefined;
+  });
+
+  selectTask(id: string | undefined): void {
+    this.selectedTaskId.set(id);
   }
 
   create(request: CreateTaskRequest): Promise<TaskDto> {

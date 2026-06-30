@@ -20,3 +20,6 @@ npm-debug.log*
 dist/
 out-tsc/
 .angular/cache/
+# SQLite (local dev database)
+task-manager-api/src/TaskManager.Api/taskmanager.db
+task-manager-api/src/TaskManager.Api/taskmanager.db-*

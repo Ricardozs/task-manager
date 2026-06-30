@@ -1,59 +1,189 @@
-# TaskManagerApp
+# Task Manager App
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.0.4.
 
-## Development server
 
-To start a local development server, run:
+Angular SPA for the Task Manager monorepo. Users register, log in with JWT, and manage their own tasks.
+
+
+
+## Prerequisites
+
+
+
+- [Node.js](https://nodejs.org/) (LTS)
+
+- Task Manager API running locally (see [../task-manager-api/README.md](../task-manager-api/README.md))
+
+
+
+## Install
+
+
 
 ```bash
-ng serve
+
+npm install
+
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
 
-## Code scaffolding
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## Run locally
+
+
+
+1. Start the API (from `task-manager-api`):
+
+
+
+   ```bash
+
+   dotnet run --project src/TaskManager.Api --launch-profile http
+
+   ```
+
+
+
+   On first run, the API seeds a demo user and sample tasks (see [API demo data](../task-manager-api/README.md#demo-data-seeding)).
+
+
+
+2. Start the dev server:
+
+
+
+   ```bash
+
+   npm start
+
+   ```
+
+
+
+   Or: `ng serve`
+
+
+
+3. Open http://localhost:4200
+
+
+
+The app calls the API at `http://localhost:5221` (see `src/environments/environment.development.ts`).
+
+
+
+### Quick start with demo account
+
+
+
+Use these credentials after a fresh API start (empty database):
+
+
+
+| Field | Value |
+
+|-------|-------|
+
+| Email | `demo@example.com` |
+
+| Password | `Demo123!` |
+
+
+
+You should see 3 preloaded tasks on `/tasks`.
+
+
+
+## Tests
+
+
 
 ```bash
-ng generate component component-name
+
+npm test
+
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+
+
+## E2E tests (Playwright)
+
+
+
+Requires the [.NET SDK](https://dotnet.microsoft.com/download) so Playwright can start the API automatically.
+
+
 
 ```bash
-ng generate --help
+
+# Install browsers (first time only)
+
+npx playwright install
+
+
+
+# Run E2E (starts API on :5221 and Angular on :4200)
+
+npm run e2e
+
 ```
 
-## Building
 
-To build the project run:
+
+Other commands:
+
+
 
 ```bash
+
+npm run e2e:ui      # Playwright UI mode
+
+npm run e2e:debug   # Debug mode
+
+```
+
+
+
+Each test registers a unique user via the UI, so you do not need to reset the database between runs.
+
+
+
+## Build
+
+
+
+```bash
+
 ng build
+
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
 
-## Running unit tests
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+## Documentation
 
-```bash
-ng test
-```
 
-## Running end-to-end tests
 
-For end-to-end (e2e) testing, run:
+- [Frontend architecture](docs/frontend-architecture.md)
 
-```bash
-ng e2e
-```
+- [Domain model](../docs/domain-model.md)
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+- [API contract](../task-manager-api/docs/openapi.yaml)
 
-## Additional Resources
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+
+## Routes
+
+
+
+| Path | Description |
+
+|------|-------------|
+
+| `/login` | Log in |
+
+| `/register` | Create account |
+
+| `/tasks` | Task list and CRUD (protected) |
+
+

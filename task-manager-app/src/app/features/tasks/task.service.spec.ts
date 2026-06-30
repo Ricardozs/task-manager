@@ -1,3 +1,4 @@
+import { ApplicationRef } from '@angular/core';
 import { provideHttpClient } from '@angular/common/http';
 import {
   HttpTestingController,
@@ -32,21 +33,46 @@ describe('TaskService', () => {
     httpMock = TestBed.inject(HttpTestingController);
   });
 
+  function flushTasksRequest(tasks: TaskDto[] = []): void {
+    TestBed.tick();
+    const request = httpMock.expectOne(`${environment.apiUrl}/api/tasks`);
+    request.flush(tasks);
+  }
+
   afterEach(() => {
     httpMock.verify();
   });
 
-  it('loads all tasks', async () => {
-    const promise = service.getAll();
+  it('loads all tasks via httpResource', async () => {
+    flushTasksRequest([sampleTask]);
 
-    const request = httpMock.expectOne(`${environment.apiUrl}/api/tasks`);
+    await TestBed.inject(ApplicationRef).whenStable();
+
+    expect(service.tasks.hasValue()).toBe(true);
+    expect(service.tasks.value()).toEqual([sampleTask]);
+  });
+
+  it('loads a task by id via httpResource', async () => {
+    flushTasksRequest();
+
+    service.selectTask(sampleTask.id);
+    TestBed.tick();
+
+    const request = httpMock.expectOne(
+      `${environment.apiUrl}/api/tasks/${sampleTask.id}`,
+    );
     expect(request.request.method).toBe('GET');
-    request.flush([sampleTask]);
+    request.flush(sampleTask);
 
-    await expect(promise).resolves.toEqual([sampleTask]);
+    await TestBed.inject(ApplicationRef).whenStable();
+
+    expect(service.task.hasValue()).toBe(true);
+    expect(service.task.value()).toEqual(sampleTask);
   });
 
   it('creates a task', async () => {
+    flushTasksRequest();
+
     const promise = service.create({
       title: sampleTask.title,
       description: sampleTask.description,
@@ -62,6 +88,8 @@ describe('TaskService', () => {
   });
 
   it('updates a task', async () => {
+    flushTasksRequest();
+
     const promise = service.update(sampleTask.id, {
       title: 'Updated title',
       description: sampleTask.description,
@@ -81,6 +109,8 @@ describe('TaskService', () => {
   });
 
   it('deletes a task', async () => {
+    flushTasksRequest();
+
     const promise = service.delete(sampleTask.id);
 
     const request = httpMock.expectOne(`${environment.apiUrl}/api/tasks/${sampleTask.id}`);
