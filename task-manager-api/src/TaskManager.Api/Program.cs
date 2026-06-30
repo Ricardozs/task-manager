@@ -17,6 +17,20 @@ builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+var corsOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>();
+if (corsOrigins is { Length: > 0 })
+{
+    builder.Services.AddCors(options =>
+    {
+        options.AddPolicy("AngularDev", policy =>
+        {
+            policy.WithOrigins(corsOrigins)
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+        });
+    });
+}
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -37,14 +51,36 @@ if (app.Environment.IsDevelopment())
 
 app.MapGet("/openapi/v1.yaml", () =>
 {
-    var path = Path.Combine(app.Environment.ContentRootPath, "openapi.yaml");
+    var path = ResolveOpenApiPath(app.Environment);
+    if (path is null)
+    {
+        return Results.NotFound();
+    }
+
     return Results.File(path, "application/yaml");
 });
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseHttpsRedirection();
+
+if (corsOrigins is { Length: > 0 })
+{
+    app.UseCors("AngularDev");
+}
+
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+static string? ResolveOpenApiPath(IWebHostEnvironment environment)
+{
+    string[] candidates =
+    [
+        Path.Combine(AppContext.BaseDirectory, "openapi.yaml"),
+        Path.Combine(environment.ContentRootPath, "openapi.yaml"),
+    ];
+
+    return candidates.FirstOrDefault(File.Exists);
+}

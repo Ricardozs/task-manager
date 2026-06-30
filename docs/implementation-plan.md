@@ -103,10 +103,10 @@ Entry point: [../AGENTS.md](../AGENTS.md)
 - [task-manager-app/docs/frontend-architecture.md](../task-manager-app/docs/frontend-architecture.md)
 
 **Tasks:**
-- [ ] Task list, create, edit, delete, status change
-- [ ] TaskService calling API endpoints
-- [ ] Signals for local state
-- [ ] Handle 401/403 errors (redirect to login)
+- [x] Task list, create, edit, delete, status change
+- [x] TaskService calling API endpoints
+- [x] Signals for local state
+- [x] Handle 401/403 errors (redirect to login)
 
 **Done when:** Full CRUD works against running API; `npm test` passes.
 
